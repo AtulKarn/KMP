@@ -160,7 +160,7 @@ int main(int argc, char** argv)
 #pragma omp parallel for default(none) shared(filesCount, fileFindings, T, keyWord)
     for (int i = 0; i < filesCount; i++)
     {
-        FILE* f = fopen(fileFindings[i].fileName, "rb");//binary mode (najlepsza standaryzacja)
+        FILE* f = fopen(fileFindings[i].fileName, "rb");
         fseek(f, 0, SEEK_END);
         long fsize = ftell(f);
         fseek(f, 0, SEEK_SET);
