@@ -176,7 +176,7 @@ int main(int argc, char** argv)
     //float time = (float)(end - start) / CLOCKS_PER_SEC;
     //OMP measuring
     double time = omp_get_wtime() - start_time;
-    puts("wyniki wyszukiwania:");
+    puts("Results:");
 
 
 
@@ -192,9 +192,9 @@ int main(int argc, char** argv)
             //printf("%d\n", fileFindings[i].array[i2]);
         }
     }
-    printf("Czas: ");
+    printf("Time: ");
     printf("%f\n", time);
-    printf("Suma wystąpień:");
+    printf("Sum of occurances:");
     printf("%d\n", sumaWystapien);
 
 
