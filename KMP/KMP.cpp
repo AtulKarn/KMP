@@ -1,15 +1,12 @@
 ﻿#include <string.h> 
-#include <stdlib.h> //malloc
+#include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 #include <dirent.h>
 #include <omp.h>
 
-
-
 #define max( a, b ) ( ((a) > (b)) ? (a) : (b) )
 
-//Dynamicaly growing array implementation
 typedef struct {
     char* fileName;
     int* array;
@@ -115,7 +112,7 @@ void kmp(int T[], char keyWord[], char searchString[], FileFindings* fileFinding
     int patternLen = strlen(keyWord);
     initFileFindings(fileFinding, 1);
 
-    for (position = 1; position <= targetLen - patternLen + 1; position = position + max(1, matchesCount - T[matchesCount]))//dopóki mieścimy się w tekście
+    for (position = 1; position <= targetLen - patternLen + 1; position = position + max(1, matchesCount - T[matchesCount]))
     {
         matchesCount = T[matchesCount];
         while ((matchesCount < patternLen) && (keyWord[matchesCount] == searchString[position + matchesCount - 1]))
@@ -133,15 +130,19 @@ int main(int argc, char** argv)
 {
     FileFindings* fileFindings;
 
-    char keyWord[100];
-    char userPath[1000];
+    char keyWord[100] = "AAGCACCC";  
+    char userPath[1000] = "D:\\VIT\\FALLSEM 21_22\\PDC\\Project\\KMP\\KMP\\Dataset\\";  
     int filesCount = 0;
     int T[100];
+    int threads = 2;
+    printf("Enter path to directory with files (ended with '\\')\n");
+    //scanf(" %[^\n]s", userPath);
+    printf("%s", userPath);
+    printf("\nKeyword to search (max 100 characeters): ");
+    //scanf(" %[^\n]s", keyWord);
+    printf("\n%s\n", keyWord);
+    printf("Number of threads: %d\n", threads);
 
-    printf("Enter path to directory with files (ended with '/')\n");
-    scanf(" %[^\n]s", userPath);
-    printf("Keyword to search (max 100 characeters): ");
-    scanf(" %[^\n]s", keyWord);
 
     checkPartialMatch(keyWord, T);
     if (strlen(userPath) < 2)
@@ -151,13 +152,14 @@ int main(int argc, char** argv)
     filesCount = getFilesCount(userPath);
     fileFindings = fillFilePaths(userPath, filesCount);
 
+
     //Seq measuring
     //clock_t start = clock();
 
     //OMP measuring
     double start_time = omp_get_wtime();
-
-#pragma omp parallel for default(none) shared(filesCount, fileFindings, T, keyWord)
+    omp_set_dynamic(0);
+#pragma omp parallel for default(none) shared(filesCount, fileFindings, T, keyWord) num_threads(threads)
     for (int i = 0; i < filesCount; i++)
     {
         FILE* f = fopen(fileFindings[i].fileName, "rb");
